@@ -138,6 +138,19 @@ require(
 
 /**
  * ===================================
+ * CREATE ORDER
+ * ===================================
+ */
+
+const {
+    createOrder
+} =
+require(
+"./handlers/user/createOrder"
+);
+
+/**
+ * ===================================
  * START SYSTEM
  * ===================================
  */
@@ -214,6 +227,11 @@ bot.action(
 bot.action(
     /checkout_(.+)_(\d+)/,
     checkout
+);
+
+bot.action(
+    /^pay_(.+)_(\d+)$/,
+    createOrder
 );
 
 
