@@ -59,6 +59,15 @@ require(
 "./handlers/admin/restock"
 );
 
+const {
+    showStockProducts,
+    showStockDetail,
+    deleteAllStock
+} =
+require(
+"./handlers/admin/stockManager"
+);
+
 /**
  * ===================================
  * APP & BOT
@@ -250,6 +259,21 @@ bot.action(
 bot.action(
     "stop_session",
     stopSession
+);
+
+bot.action(
+    "admin_delete_stock",
+    showStockProducts
+);
+
+bot.action(
+    /^stock_(.+)$/,
+    showStockDetail
+);
+
+bot.action(
+    /^delete_stock_(.+)$/,
+    deleteAllStock
 );
 
 
