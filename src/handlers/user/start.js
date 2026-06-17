@@ -1,5 +1,14 @@
 /**
  * ===================================
+ * BLOK : MAIN MENU
+ * ===================================
+ */
+
+const mainMenu =
+require("../../keyboards/mainMenu");
+
+/**
+ * ===================================
  * FILE : start.js
  * FUNGSI :
  * - Registrasi user baru
@@ -105,9 +114,14 @@ catch(error)
             );
         }
 
-        return ctx.reply(
-            "✅ Selamat datang di Host Express Bot"
-        );
+       return ctx.reply(
+`🏪 Host Express Bot
+
+Selamat datang kembali.
+
+Silakan pilih menu di bawah.`,
+mainMenu()
+);
     }
     catch(err)
     {

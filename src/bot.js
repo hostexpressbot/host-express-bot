@@ -1,5 +1,17 @@
 /**
  * ===================================
+ * BLOK : MAIN MENU HANDLER
+ * ===================================
+ */
+
+const {
+    backMainMenu
+} = require(
+    "./handlers/user/mainMenu"
+);
+
+/**
+ * ===================================
  * BLOK : APPROVAL HANDLER
  * ===================================
  */
@@ -88,6 +100,16 @@ bot.action(
 bot.action(
     /reject_(\d+)/,
     rejectUser
+);
+/**
+ * ===================================
+ * BLOK : BACK TO MAIN MENU
+ * ===================================
+ */
+
+bot.action(
+    "back_main_menu",
+    backMainMenu
 );
 
         await bot.launch();
