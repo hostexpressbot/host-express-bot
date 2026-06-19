@@ -12,6 +12,9 @@ require("../../models/Setting");
 const adminPanel =
 require("./adminPanel");
 
+const { Markup } =
+require("telegraf");
+
 const sessions = {};
 
 /**
@@ -26,16 +29,58 @@ async function startChangeQris(ctx)
     {
         sessions[
             ctx.from.id
-        ] = true;
+        ] =
+        {
+            messageId:
+            ctx.callbackQuery.message.message_id
+        };
 
         await ctx.editMessageText(
 `💳 UBAH QRIS
 
-Kirim URL gambar QRIS baru.
+🔗 Kirim URL QRIS baru.
 
 Contoh:
-https://domain.com/qris.jpg`
+https://domain.com/qris.jpg
+
+━━━━━━━━━━━━━━
+
+Atau tekan tombol
+❌ BATAL untuk keluar.`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "❌ BATAL",
+                "cancel_qris"
+            )
+        ]
+    ]).reply_markup
+}
         );
+    }
+    catch(err)
+    {
+        console.error(err);
+    }
+}
+
+/**
+ * ===================================
+ * BATAL UBAH QRIS
+ * ===================================
+ */
+
+async function cancelQris(ctx)
+{
+    try
+    {
+        delete sessions[
+            ctx.from.id
+        ];
+
+        return adminPanel(ctx);
     }
     catch(err)
     {
@@ -79,26 +124,63 @@ async function handleChangeQris(ctx)
 
         await setting.save();
 
+        const messageId =
+        sessions[
+            ctx.from.id
+        ].messageId;
+
         delete sessions[
             ctx.from.id
         ];
 
-        await ctx.reply(
+        try
+        {
+            await ctx.deleteMessage(
+                ctx.message.message_id
+            );
+        }
+        catch {}
+
+        await ctx.telegram.editMessageText(
+            ctx.chat.id,
+            messageId,
+            null,
+
 `✅ QRIS BERHASIL DIUBAH
 
-🔗 URL:
-${url}`
+🔗 URL QRIS:
+
+${url}
+
+━━━━━━━━━━━━━━
+
+🚀 QRIS berhasil diperbarui.`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "🏠 ADMIN PANEL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
         );
 
-        return adminPanel(ctx);
+        return true;
     }
     catch(err)
     {
         console.error(err);
 
-        await ctx.reply(
-            "❌ Gagal mengubah QRIS."
-        );
+        try
+        {
+            await ctx.reply(
+                "❌ Gagal mengubah QRIS."
+            );
+        }
+        catch {}
 
         return true;
     }
@@ -106,5 +188,6 @@ ${url}`
 
 module.exports = {
     startChangeQris,
-    handleChangeQris
+    handleChangeQris,
+    cancelQris
 };

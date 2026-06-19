@@ -10,6 +10,9 @@ require("../../models/Stock");
 const Order =
 require("../../models/Order");
 
+const { Markup } =
+require("telegraf");
+
 async function showDashboard(ctx)
 {
     try
@@ -28,37 +31,26 @@ async function showDashboard(ctx)
         const totalOrder =
         await Order.countDocuments();
 
-        const successOrder =
-        await Order.countDocuments({
-            status: "success"
-        });
-
-        const pendingOrder =
-        await Order.countDocuments({
-            status: "pending"
-        });
-
-        const cancelledOrder =
-        await Order.countDocuments({
-            status: "cancelled"
-        });
-
-        await ctx.reply(
+        await ctx.editMessageText(
 `📊 DASHBOARD
 
-👥 User      : ${totalUser}
+👥 ${totalUser} User
+📦 ${totalProduct} Produk
+📚 ${totalStock} Stock
+💰 ${totalOrder} Order
 
-📦 Produk    : ${totalProduct}
-
-📚 Stock     : ${totalStock}
-
-💰 Order     : ${totalOrder}
-
-✅ Success   : ${successOrder}
-
-⏳ Pending   : ${pendingOrder}
-
-❌ Cancelled : ${cancelledOrder}`
+🚀 Host Express Bot`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "⬅️ KEMBALI",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
         );
     }
     catch(err)

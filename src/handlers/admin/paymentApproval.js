@@ -100,21 +100,39 @@ Status:
 SUCCESS`
         );
 
-        await ctx.telegram.sendMessage(
-            order.userId,
+let accountList = "";
+
+accounts.forEach(
+    (account, index) =>
+    {
+        accountList +=
+`🔹 AKUN ${index + 1}
+
+${account}
+
+━━━━━━━━━━━━━━
+
+`;
+    }
+);
+
+await ctx.telegram.sendMessage(
+    order.userId,
 
 `🎉 PESANAN BERHASIL
 
-🆔 Invoice:
+🆔 Invoice :
 ${order.invoice}
 
-📦 Produk:
+📦 Produk :
 ${product.name}
 
-📦 Data Akun:
+━━━━━━━━━━━━━━
 
-${accounts.join("\n\n")}`
-        );
+${accountList}
+
+🚀 HOST EXPRESS BOT`
+);
     }
     catch(err)
     {

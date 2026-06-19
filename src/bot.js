@@ -61,7 +61,8 @@ require(
 
 const {
     startChangeQris,
-    handleChangeQris
+    handleChangeQris,
+    cancelQris
 } =
 require(
 "./handlers/admin/changeQris"
@@ -432,6 +433,11 @@ bot.action(
 bot.action(
     "admin_change_qris",
     startChangeQris
+);
+
+bot.action(
+    "cancel_qris",
+    cancelQris
 );
 
 bot.action(
