@@ -53,6 +53,7 @@ const {
     startRestock,
     chooseProduct,
     handleRestock,
+    finishRestock,
     stopSession
 } =
 require(
@@ -423,6 +424,11 @@ bot.action(
 bot.action(
     "stop_session",
     stopSession
+);
+
+bot.action(
+    "finish_restock",
+    finishRestock
 );
 
 bot.action(
