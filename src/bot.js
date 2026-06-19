@@ -76,6 +76,14 @@ require(
 "./handlers/admin/stockManager"
 );
 
+const {
+    startBroadcast,
+    handleBroadcast
+} =
+require(
+"./handlers/admin/broadcast"
+);
+
 /**
  * ===================================
  * APP & BOT
@@ -162,6 +170,13 @@ const {
 } =
 require(
 "./handlers/user/myTransactions"
+);
+
+const {
+    showAccount
+} =
+require(
+"./handlers/user/account"
 );
 
 const {
@@ -292,6 +307,11 @@ bot.action(
 );
 
 bot.action(
+    "menu_akun",
+    showAccount
+);
+
+bot.action(
     /^trx_(.+)$/,
     showTransactionDetail
 );
@@ -328,7 +348,7 @@ bot.action(
  */
 
 bot.action(
-    /product_(.+)/,
+    /^product_(.+)$/,
     showProductDetail
 );
 
@@ -339,7 +359,7 @@ bot.action(
  */
 
 bot.action(
-    /qty_(.+)_(\d+)/,
+    /^qty_(.+)_(\d+)$/,
     selectQty
 );
 
@@ -350,7 +370,7 @@ bot.action(
  */
 
 bot.action(
-    /checkout_(.+)_(\d+)/,
+    /^checkout_(.+)_(\d+)$/,
     checkout
 );
 
@@ -464,6 +484,11 @@ bot.action(
     deleteAllStock
 );
 
+bot.action(
+    "admin_broadcast",
+    startBroadcast
+);
+
 
  /**
  * ===================================
@@ -475,6 +500,7 @@ bot.on(
     "text",
     async (ctx, next) =>
     {
+
         const addProductHandled =
         await handleAddProduct(
             ctx
@@ -525,6 +551,16 @@ if (editPriceHandled)
     return;
 }
 
+const broadcastHandled =
+await handleBroadcast(
+    ctx
+);
+
+if (broadcastHandled)
+{
+    return;
+}
+
         return next();
     }
 );
@@ -535,7 +571,7 @@ if (editPriceHandled)
          */
 
         await bot.launch();
-
+        
         /**
          * ===================================
          * EXPRESS SERVER

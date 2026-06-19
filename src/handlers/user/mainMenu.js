@@ -115,6 +115,13 @@ async function renderHome(ctx)
         )
     ]);
 
+    buttons.push([
+    Markup.button.callback(
+        "👤 AKUN SAYA",
+        "menu_akun"
+    )
+]);
+
     return {
         text,
         keyboard:

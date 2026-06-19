@@ -27,21 +27,33 @@ async function startAddProduct(ctx)
 
     await setSession(
         ctx.from.id,
-        "ADD_PRODUCT_NAME"
+        "ADD_PRODUCT_NAME",
+        {
+            panelMessageId:
+            ctx.callbackQuery.message.message_id
+        }
     );
 
-    await ctx.reply(
+    await ctx.editMessageText(
 `➕ TAMBAH PRODUK
 
-Masukkan nama produk baru.`,
-        Markup.inlineKeyboard([
-            [
-                Markup.button.callback(
-                    "❌ BATAL",
-                    "stop_session"
-                )
-            ]
-        ])
+📦 Masukkan nama produk baru.
+
+━━━━━━━━━━━━━━
+
+Contoh:
+AWS 5V NO GARANSI`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "❌ BATAL",
+                "stop_session"
+            )
+        ]
+    ]).reply_markup
+}
     );
 }
 
@@ -57,43 +69,90 @@ async function handleAddProduct(ctx)
         return false;
     }
 
+    /**
+     * ===============================
+     * INPUT NAMA PRODUK
+     * ===============================
+     */
+
     if (
         session.mode ===
         "ADD_PRODUCT_NAME"
     )
     {
+        try
+        {
+            await ctx.deleteMessage(
+                ctx.message.message_id
+            );
+        }
+        catch {}
+
         await setSession(
             ctx.from.id,
             "ADD_PRODUCT_PRICE",
             {
                 name:
-                ctx.message.text
+                ctx.message.text,
+
+                panelMessageId:
+                session.data.panelMessageId
             }
         );
 
-        await ctx.reply(
-`💰 MASUKKAN HARGA PRODUK
+        await ctx.telegram.editMessageText(
+            ctx.chat.id,
+            session.data.panelMessageId,
+            null,
+
+`💰 INPUT HARGA PRODUK
+
+📦 Produk :
+${ctx.message.text}
+
+━━━━━━━━━━━━━━
+
+💵 Masukkan harga produk
 
 Contoh:
-25000`,
-            Markup.inlineKeyboard([
-                [
-                    Markup.button.callback(
-                        "❌ BATAL",
-                        "admin_panel"
-                    )
-                ]
-            ])
+25000
+
+⚠️ Tanpa titik atau koma`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "❌ BATAL",
+                "stop_session"
+            )
+        ]
+    ]).reply_markup
+}
         );
 
         return true;
     }
+
+    /**
+     * ===============================
+     * INPUT HARGA PRODUK
+     * ===============================
+     */
 
     if (
         session.mode ===
         "ADD_PRODUCT_PRICE"
     )
     {
+        try
+        {
+            await ctx.deleteMessage(
+                ctx.message.message_id
+            );
+        }
+        catch {}
+
         const price =
         Number(
             ctx.message.text
@@ -103,8 +162,33 @@ Contoh:
             isNaN(price)
         )
         {
-            await ctx.reply(
-                "❌ Harga harus berupa angka."
+            await ctx.telegram.editMessageText(
+                ctx.chat.id,
+                session.data.panelMessageId,
+                null,
+
+`❌ HARGA TIDAK VALID
+
+📦 Produk :
+${session.data.name}
+
+━━━━━━━━━━━━━━
+
+Masukkan angka saja.
+
+Contoh:
+25000`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "❌ BATAL",
+                "stop_session"
+            )
+        ]
+    ]).reply_markup
+}
             );
 
             return true;
@@ -121,14 +205,32 @@ Contoh:
             ctx.from.id
         );
 
-        await ctx.reply(
+        await ctx.telegram.editMessageText(
+            ctx.chat.id,
+            session.data.panelMessageId,
+            null,
+
 `✅ PRODUK BERHASIL DIBUAT
 
-📦 Nama:
+📦 Nama :
 ${session.data.name}
 
-💰 Harga:
-Rp${price.toLocaleString()}`
+💰 Harga :
+Rp${price.toLocaleString()}
+
+🚀 Produk sudah tampil
+di menu user`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "🏠 ADMIN PANEL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
         );
 
         return true;

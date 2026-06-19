@@ -57,10 +57,6 @@ function adminMenu()
 
         [
             Markup.button.callback(
-                "🖼 BANNER",
-                "admin_change_banner"
-            ),
-            Markup.button.callback(
                 "📢 BROADCAST",
                 "admin_broadcast"
             )

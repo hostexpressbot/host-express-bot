@@ -12,6 +12,7 @@ const {
 } =
 require("./mainMenu");
 
+
 /**
  * ===================================
  * FILE : start.js
@@ -123,7 +124,9 @@ await renderHome(ctx);
 
 return ctx.reply(
     home.text,
-    home.keyboard
+    {
+        ...home.keyboard,
+    }
 );
     }
     catch(err)
