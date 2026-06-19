@@ -9,6 +9,9 @@
 const Product =
 require("../../models/Product");
 
+const Stock =
+require("../../models/Stock");
+
 const { Markup } =
 require("telegraf");
 
@@ -35,6 +38,21 @@ async function selectQty(ctx)
                 "Produk tidak ditemukan"
             );
         }
+
+        const availableStock =
+await Stock.countDocuments({
+    productId,
+    sold: false
+});
+
+        if (
+    qty > availableStock
+)
+{
+    return ctx.answerCbQuery(
+        "Stock tidak cukup"
+    );
+}
 
         const total =
         product.price * qty;

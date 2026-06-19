@@ -8,57 +8,58 @@
 
 const { Markup } = require("telegraf");
 
-function adminMenu() {
+function adminMenu()
+{
     return Markup.inlineKeyboard([
         [
             Markup.button.callback(
-                "➕ TAMBAH PRODUK",
+                "➕ TAMBAH",
                 "admin_add_product"
-            )
-        ],
-        [
+            ),
             Markup.button.callback(
-                "✏️ UBAH NAMA PRODUK",
+                "✏️ NAMA",
                 "admin_edit_product"
             )
         ],
+
         [
             Markup.button.callback(
-                "💰 UBAH HARGA",
+                "💰 HARGA",
                 "admin_edit_price"
-            )
-        ],
-        [
+            ),
             Markup.button.callback(
                 "📦 RESTOCK",
                 "admin_restock"
             )
         ],
+
         [
             Markup.button.callback(
-                "🗑 HAPUS STOCK",
+                "🗑 STOCK",
                 "admin_delete_stock"
-            )
-        ],
-        [
+            ),
             Markup.button.callback(
-                "❌ HAPUS PRODUK",
+                "❌ PRODUK",
                 "admin_delete_product"
             )
         ],
+
         [
             Markup.button.callback(
-                "💳 UBAH LINK QRIS",
+                "💳 QRIS",
                 "admin_change_qris"
+            ),
+            Markup.button.callback(
+                "📊 DASHBOARD",
+                "admin_dashboard"
             )
         ],
+
         [
             Markup.button.callback(
-                "🖼 UBAH BANNER",
+                "🖼 BANNER",
                 "admin_change_banner"
-            )
-        ],
-        [
+            ),
             Markup.button.callback(
                 "📢 BROADCAST",
                 "admin_broadcast"

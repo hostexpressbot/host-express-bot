@@ -13,10 +13,18 @@ const {
     setSession,
     getSession,
     clearSession
-} = require("../../utils/sessionManager");
+} =
+require("../../utils/sessionManager");
+
+const { Markup } =
+require("telegraf");
 
 async function startAddProduct(ctx)
 {
+    await clearSession(
+        ctx.from.id
+    );
+
     await setSession(
         ctx.from.id,
         "ADD_PRODUCT_NAME"
@@ -25,12 +33,15 @@ async function startAddProduct(ctx)
     await ctx.reply(
 `➕ TAMBAH PRODUK
 
-Masukkan nama produk.
-
-Contoh:
-AWS 5V
-
-Ketik /cancel untuk batal.`
+Masukkan nama produk baru.`,
+        Markup.inlineKeyboard([
+            [
+                Markup.button.callback(
+                    "❌ BATAL",
+                    "stop_session"
+                )
+            ]
+        ])
     );
 }
 
@@ -41,7 +52,10 @@ async function handleAddProduct(ctx)
         ctx.from.id
     );
 
-    if (!session) return false;
+    if (!session)
+    {
+        return false;
+    }
 
     if (
         session.mode ===
@@ -52,15 +66,24 @@ async function handleAddProduct(ctx)
             ctx.from.id,
             "ADD_PRODUCT_PRICE",
             {
-                name: ctx.message.text
+                name:
+                ctx.message.text
             }
         );
 
         await ctx.reply(
-`💰 Masukkan harga produk
+`💰 MASUKKAN HARGA PRODUK
 
 Contoh:
-25000`
+25000`,
+            Markup.inlineKeyboard([
+                [
+                    Markup.button.callback(
+                        "❌ BATAL",
+                        "admin_panel"
+                    )
+                ]
+            ])
         );
 
         return true;
@@ -81,7 +104,7 @@ Contoh:
         )
         {
             await ctx.reply(
-                "❌ Harga harus angka."
+                "❌ Harga harus berupa angka."
             );
 
             return true;
@@ -99,10 +122,13 @@ Contoh:
         );
 
         await ctx.reply(
-`✅ Produk berhasil dibuat
+`✅ PRODUK BERHASIL DIBUAT
 
-📦 ${session.data.name}
-💰 Rp${price.toLocaleString()}`
+📦 Nama:
+${session.data.name}
+
+💰 Harga:
+Rp${price.toLocaleString()}`
         );
 
         return true;

@@ -7,6 +7,11 @@
 const mainMenu =
 require("../../keyboards/mainMenu");
 
+const {
+    renderHome
+} =
+require("./mainMenu");
+
 /**
  * ===================================
  * FILE : start.js
@@ -113,14 +118,12 @@ catch(error)
                 "❌ Pendaftaran Anda ditolak."
             );
         }
+const home =
+await renderHome(ctx);
 
-       return ctx.reply(
-`🏪 Host Express Bot
-
-Selamat datang kembali.
-
-Silakan pilih menu di bawah.`,
-mainMenu()
+return ctx.reply(
+    home.text,
+    home.keyboard
 );
     }
     catch(err)

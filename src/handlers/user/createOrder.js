@@ -9,9 +9,6 @@ require("telegraf");
 
 async function createOrder(ctx)
 {
-    console.log("=== CREATE ORDER CALLED ===");
-    console.log(ctx.callbackQuery.data);
-
     try
     {
         const productId =
@@ -19,6 +16,24 @@ async function createOrder(ctx)
 
         const qty =
         Number(ctx.match[2]);
+
+        const existing =
+        await Order.findOne({
+            userId: ctx.from.id,
+            status: {
+                $in: [
+                    "pending",
+                    "paid"
+                ]
+            }
+        });
+
+        if (existing)
+        {
+            return ctx.answerCbQuery(
+                "Selesaikan transaksi sebelumnya dulu"
+            );
+        }
 
         const product =
         await Product.findById(
@@ -38,33 +53,44 @@ async function createOrder(ctx)
         const invoice =
         "INV-" + Date.now();
 
+        const order =
         await Order.create({
             invoice,
-            userId: ctx.from.id,
+            userId:
+            ctx.from.id,
             productId,
             qty,
             total,
-            status: "pending"
+            status:
+            "pending"
         });
 
         await ctx.editMessageText(
-`🧾 INVOICE BERHASIL DIBUAT
+`🧾 INVOICE
 
 🆔 ${invoice}
 
 📦 ${product.name}
 
-🔢 Qty : ${qty}
+🔢 Qty:
+${qty}
 
-💰 Total :
+💰 Total:
 Rp${total.toLocaleString()}
 
-Status : PENDING`,
+Status:
+PENDING`,
             Markup.inlineKeyboard([
                 [
                     Markup.button.callback(
                         "💳 BAYAR",
-                        `payment_${invoice}`
+                        `view_qris_${order._id}`
+                    )
+                ],
+                [
+                    Markup.button.callback(
+                        "❌ BATALKAN",
+                        `cancel_order_${order._id}`
                     )
                 ]
             ])

@@ -7,6 +7,9 @@
 const Product =
 require("../../models/Product");
 
+const adminPanel =
+require("./adminPanel");
+
 const Stock =
 require("../../models/Stock");
 
@@ -59,9 +62,9 @@ async function startRestock(ctx)
 
     buttons.push([
         Markup.button.callback(
-            "⬅️ KEMBALI",
-            "back_main_menu"
-        )
+    "⬅️ KEMBALI",
+    "admin_panel"
+)
     ]);
 
     await ctx.editMessageText(
@@ -161,13 +164,30 @@ async function handleRestock(ctx)
 
 async function stopSession(ctx)
 {
-    await clearSession(
-        ctx.from.id
-    );
+    try
+    {
+        await clearSession(
+            ctx.from.id
+        );
 
-    await ctx.editMessageText(
-`✅ MODE RESTOCK DIHENTIKAN`
-    );
+        await ctx.answerCbQuery(
+            "Dibatalkan"
+        );
+
+        try
+        {
+            await ctx.deleteMessage();
+        }
+        catch(e)
+        {
+        }
+
+        return adminPanel(ctx);
+    }
+    catch(err)
+    {
+        console.error(err);
+    }
 }
 
 module.exports = {

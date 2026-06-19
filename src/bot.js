@@ -60,6 +60,14 @@ require(
 );
 
 const {
+    startChangeQris,
+    handleChangeQris
+} =
+require(
+"./handlers/admin/changeQris"
+);
+
+const {
     showStockProducts,
     showStockDetail,
     deleteAllStock
@@ -149,6 +157,83 @@ require(
 "./handlers/user/createOrder"
 );
 
+const {
+    showMyTransactions
+} =
+require(
+"./handlers/user/myTransactions"
+);
+
+const {
+    showTransactionDetail
+} =
+require(
+"./handlers/user/transactionDetail"
+);
+
+const {
+    viewQris
+} =
+require(
+"./handlers/user/viewQris"
+);
+
+const {
+    alreadyPaid
+} =
+require(
+"./handlers/user/alreadyPaid"
+);
+
+const {
+    acceptPayment,
+    rejectPayment
+} =
+require(
+"./handlers/admin/paymentApproval"
+);
+
+const {
+    cancelOrder
+} =
+require(
+"./handlers/user/cancelOrder"
+);
+
+const {
+    showDashboard
+} =
+require(
+"./handlers/admin/dashboard"
+);
+
+const {
+    startEditProduct,
+    chooseEditProduct,
+    handleEditProduct
+} =
+require(
+"./handlers/admin/editProduct"
+);
+
+const {
+    startEditPrice,
+    choosePrice,
+    handleEditPrice
+} =
+require(
+"./handlers/admin/editPrice"
+);
+
+const {
+    startDeleteProduct,
+    confirmDeleteProduct,
+    executeDeleteProduct
+} =
+require(
+"./handlers/admin/deleteProduct"
+);
+
 /**
  * ===================================
  * START SYSTEM
@@ -174,6 +259,11 @@ require(
             adminPanel
         );
 
+        bot.action(
+    "admin_panel",
+    adminPanel
+);
+
         /**
          * ===================================
          * USER ACTIONS
@@ -194,6 +284,41 @@ require(
 bot.action(
     "menu_produk",
     showProducts
+);
+
+bot.action(
+    "menu_transaksi",
+    showMyTransactions
+);
+
+bot.action(
+    /^trx_(.+)$/,
+    showTransactionDetail
+);
+
+bot.action(
+    /^view_qris_(.+)$/,
+    viewQris
+);
+
+bot.action(
+    /^already_paid_(.+)$/,
+    alreadyPaid
+);
+
+bot.action(
+    /^accept_payment_(.+)$/,
+    acceptPayment
+);
+
+bot.action(
+    /^reject_payment_(.+)$/,
+    rejectPayment
+);
+
+bot.action(
+    /^cancel_order_(.+)$/,
+    cancelOrder
 );
 
 /**
@@ -285,6 +410,51 @@ bot.action(
 );
 
 bot.action(
+    "admin_change_qris",
+    startChangeQris
+);
+
+bot.action(
+    "admin_dashboard",
+    showDashboard
+);
+
+bot.action(
+    "admin_edit_product",
+    startEditProduct
+);
+
+bot.action(
+    /^edit_product_(.+)$/,
+    chooseEditProduct
+);
+
+bot.action(
+    "admin_edit_price",
+    startEditPrice
+);
+
+bot.action(
+    /^edit_price_(.+)$/,
+    choosePrice
+);
+
+bot.action(
+    "admin_delete_product",
+    startDeleteProduct
+);
+
+bot.action(
+    /^delprod_(.+)$/,
+    confirmDeleteProduct
+);
+
+bot.action(
+    /^confirm_del_(.+)$/,
+    executeDeleteProduct
+);
+
+bot.action(
     /^stock_(.+)$/,
     showStockDetail
 );
@@ -324,6 +494,36 @@ bot.on(
         {
             return;
         }
+
+        const qrisHandled =
+await handleChangeQris(
+    ctx
+);
+
+if (qrisHandled)
+{
+    return;
+}
+
+const editProductHandled =
+await handleEditProduct(
+    ctx
+);
+
+if (editProductHandled)
+{
+    return;
+}
+
+const editPriceHandled =
+await handleEditPrice(
+    ctx
+);
+
+if (editPriceHandled)
+{
+    return;
+}
 
         return next();
     }

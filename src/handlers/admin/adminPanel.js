@@ -26,12 +26,16 @@ async function adminPanel(ctx)
             );
         }
 
-        return ctx.reply(
+   const safeEdit =
+require("../../utils/safeEdit");
+
+await safeEdit(
+    ctx,
 `⚙️ ADMIN PANEL
 
 Host Express Bot`,
-            adminMenu()
-        );
+adminMenu()
+);
     }
     catch(err)
     {

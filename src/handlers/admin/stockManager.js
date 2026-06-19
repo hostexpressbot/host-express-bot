@@ -40,9 +40,9 @@ async function showStockProducts(ctx)
 
     buttons.push([
         Markup.button.callback(
-            "⬅️ KEMBALI",
-            "back_main_menu"
-        )
+    "⬅️ KEMBALI",
+    "admin_panel"
+)
     ]);
 
     await ctx.editMessageText(

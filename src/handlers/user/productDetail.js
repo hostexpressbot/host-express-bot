@@ -9,6 +9,9 @@
 const Product =
 require("../../models/Product");
 
+const Stock =
+require("../../models/Stock");
+
 const qtyKeyboard =
 require("../../keyboards/qtyKeyboard");
 
@@ -30,6 +33,37 @@ async function showProductDetail(ctx)
                 "Produk tidak ditemukan"
             );
         }
+
+        const stock =
+await Stock.countDocuments({
+    productId,
+    sold: false
+});
+
+if (stock <= 0)
+{
+    return await ctx.editMessageText(
+`❌ STOCK HABIS
+
+📦 Produk:
+${product.name}
+
+Silakan tunggu admin melakukan restock.`,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            text: "⬅️ KEMBALI",
+                            callback_data:
+                            "back_main_menu"
+                        }
+                    ]
+                ]
+            }
+        }
+    );
+}
 
         await ctx.editMessageText(
 `📦 ${product.name}
