@@ -33,7 +33,16 @@ require("telegraf");
 
 module.exports =
 async (ctx) =>
+{   if (
+    String(ctx.from.id) ===
+    String(ADMIN_ID)
+)
 {
+    const adminPanel =
+    require("../admin/adminPanel");
+
+    return adminPanel(ctx);
+}
     try
     {
         const telegramId =
