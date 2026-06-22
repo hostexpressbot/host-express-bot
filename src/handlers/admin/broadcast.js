@@ -15,11 +15,15 @@ async function startBroadcast(ctx)
 {
     try
     {
+      
         await setSession(
-            ctx.from.id,
-            "BROADCAST",
-            {}
-        );
+    ctx.from.id,
+    "BROADCAST",
+    {
+        panelMessageId:
+        ctx.callbackQuery.message.message_id
+    }
+);
 
         await ctx.editMessageText(
 `📢 BROADCAST
@@ -102,13 +106,39 @@ ${message}`
         await clearSession(
             ctx.from.id
         );
+try
+{
+    await ctx.deleteMessage(
+        ctx.message.message_id
+    );
+}
+catch {}
 
-        await ctx.reply(
+await clearSession(
+    ctx.from.id
+);
+
+await ctx.telegram.editMessageText(
+    ctx.chat.id,
+    session.data.panelMessageId,
+    null,
+
 `✅ BROADCAST SELESAI
 
 📨 Berhasil terkirim:
-${success} user`
-        );
+${success} user`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "🏠 ADMIN PANEL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
+);
 
         return true;
     }

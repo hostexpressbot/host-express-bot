@@ -67,22 +67,38 @@ async function chooseEditProduct(ctx)
             );
         }
 
-        await setSession(
-            ctx.from.id,
-            "EDIT_PRODUCT_NAME",
-            {
-                productId
-            }
-        );
+await setSession(
+    ctx.from.id,
+    "EDIT_PRODUCT_NAME",
+    {
+        productId,
+        panelMessageId:
+        ctx.callbackQuery.message.message_id
+    }
+);
 
-        await ctx.reply(
+ await ctx.editMessageText(
 `✏️ UBAH NAMA PRODUK
 
 Nama lama:
 ${product.name}
 
-Ketik nama baru.`
-        );
+━━━━━━━━━━━━━━
+
+Ketik nama baru.`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "❌ BATAL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
+);
+
     }
     catch(err)
     {
@@ -118,16 +134,39 @@ async function handleEditProduct(ctx)
             }
         );
 
-        await clearSession(
-            ctx.from.id
-        );
+try
+{
+    await ctx.deleteMessage(
+        ctx.message.message_id
+    );
+}
+catch {}
 
-        await ctx.reply(
+await clearSession(
+    ctx.from.id
+);
+
+await ctx.telegram.editMessageText(
+    ctx.chat.id,
+    session.data.panelMessageId,
+    null,
+
 `✅ NAMA PRODUK BERHASIL DIUBAH
 
 Nama baru:
-${newName}`
-        );
+${newName}`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "🏠 ADMIN PANEL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
+);
 
         return true;
     }

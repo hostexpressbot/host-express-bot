@@ -67,15 +67,17 @@ async function choosePrice(ctx)
             );
         }
 
-        await setSession(
-            ctx.from.id,
-            "EDIT_PRODUCT_PRICE",
-            {
-                productId
-            }
-        );
+       await setSession(
+    ctx.from.id,
+    "EDIT_PRODUCT_PRICE",
+    {
+        productId,
+        panelMessageId:
+        ctx.callbackQuery.message.message_id
+    }
+);
 
-        await ctx.reply(
+       await ctx.editMessageText(
 `💰 UBAH HARGA
 
 Produk:
@@ -84,8 +86,22 @@ ${product.name}
 Harga lama:
 Rp${product.price.toLocaleString()}
 
-Masukkan harga baru.`
-        );
+━━━━━━━━━━━━━━
+
+Masukkan harga baru.`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "❌ BATAL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
+);
+
     }
     catch(err)
     {
@@ -136,12 +152,39 @@ async function handleEditPrice(ctx)
             ctx.from.id
         );
 
-        await ctx.reply(
+       try
+{
+    await ctx.deleteMessage(
+        ctx.message.message_id
+    );
+}
+catch {}
+
+await clearSession(
+    ctx.from.id
+);
+
+await ctx.telegram.editMessageText(
+    ctx.chat.id,
+    session.data.panelMessageId,
+    null,
+
 `✅ HARGA BERHASIL DIUBAH
 
 Harga baru:
-Rp${price.toLocaleString()}`
-        );
+Rp${price.toLocaleString()}`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "🏠 ADMIN PANEL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
+);
 
         return true;
     }

@@ -117,16 +117,36 @@ async function deleteAllStock(ctx)
             productId
         );
 
+        const stockCount =
+await Stock.countDocuments({
+    productId
+});
+
         await Stock.deleteMany({
             productId
         });
 
-        await ctx.editMessageText(
+await ctx.editMessageText(
 `✅ STOCK BERHASIL DIHAPUS
 
 📦 Produk:
-${product.name}`
-        );
+${product.name}
+
+🗑 Total Dihapus:
+${stockCount} Akun`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "🏠 ADMIN PANEL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
+);
+
     }
     catch(err)
     {

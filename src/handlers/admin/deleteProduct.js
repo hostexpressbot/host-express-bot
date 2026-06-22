@@ -127,15 +127,26 @@ async function executeDeleteProduct(ctx)
         await Product.findByIdAndDelete(
             productId
         );
-
-        return ctx.editMessageText(
+return ctx.editMessageText(
 `✅ PRODUK BERHASIL DIHAPUS
 
 Nama:
 ${product.name}
 
-📦 Stock juga ikut dihapus`
-        );
+📦 Stock juga ikut dihapus`,
+{
+    reply_markup:
+    Markup.inlineKeyboard([
+        [
+            Markup.button.callback(
+                "🏠 ADMIN PANEL",
+                "admin_panel"
+            )
+        ]
+    ]).reply_markup
+}
+);
+
     }
     catch(err)
     {
